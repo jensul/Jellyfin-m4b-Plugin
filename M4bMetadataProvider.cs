@@ -125,15 +125,32 @@ public class M4bMetadataProvider : ILocalMetadataProvider<AudioBook>
                     });
                 }
                 
-                // Let's assume there is a way to pass chapters in MetadataResult or Item or we just set it if it exists.
-                // Wait, MetadataResult has no Chapters? Let's check it in the compile test.
-                _logger.LogInformation("Found {ChapterCount} chapters from M4B file: {Path}", track.Chapters.Count, info.Path);
-                
-                // If it fails to compile, I'll update it to implement IChapterProvider if needed.
+                // Jellyfin 10.11 drops Chapters from raw BaseItem inline assignments, typically expecting IChapterManager integration. 
+                // However, they are safely parsed here if you ever expand this class.
+                _logger.LogDebug("Parsed {ChapterCount} chapters from M4B file: {Path}", track.Chapters.Count, info.Path);
             }
 
             result.HasMetadata = true;
-            _logger.LogInformation("Successfully extracted metadata from M4B file: {Path}", info.Path);
+            
+            // Log EXACTLY what we extracted so the user can verify it in the Jellyfin logs
+            _logger.LogInformation("\n=== M4B Metadata Enhancer Extracted ===\n" +
+                                   "File: {Path}\n" +
+                                   "Title: {Title}\n" +
+                                   "Album: {Album}\n" +
+                                   "Author(s): {Artist}\n" +
+                                   "Narrator(s) [Composer Tag]: {Composer}\n" +
+                                   "Year: {Year}\n" +
+                                   "Genres: {Genre}\n" +
+                                   "Chapters: {ChapterCount}\n" +
+                                   "=========================================", 
+                                   info.Path, 
+                                   track.Title ?? "N/A", 
+                                   track.Album ?? "N/A", 
+                                   track.Artist ?? "N/A", 
+                                   track.Composer ?? "N/A", 
+                                   track.Year, 
+                                   track.Genre ?? "N/A",
+                                   track.Chapters?.Count ?? 0);
         }
         catch (Exception ex)
         {
