@@ -76,18 +76,14 @@ public class M4bMetadataProvider : ILocalMetadataProvider<AudioBook>
             // M4B usually stores Narrators in the Composer field
             if (!string.IsNullOrWhiteSpace(track.Composer))
             {
-                if (result.People == null)
-                {
-                    result.People = new List<PersonInfo>();
-                }
-                
-                var narrator = new PersonInfo
+                var currentPeople = result.People?.ToList() ?? new List<PersonInfo>();
+                currentPeople.Add(new PersonInfo
                 {
                     Name = track.Composer,
                     Type = Jellyfin.Data.Enums.PersonKind.Actor,
                     Role = "Narrator"
-                };
-                result.People.Add(narrator);
+                });
+                result.People = currentPeople;
             }
 
             result.Item.Overview = track.Comment;
