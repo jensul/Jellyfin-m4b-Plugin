@@ -19,14 +19,26 @@ Installing plugin manually requires you to place the compiled `.dll` output dire
 5. **Restart** your Jellyfin Server.
 6. The plugin will appear in **Dashboard -> Plugins**. You can then rescan your Audiobook Media Libraries.
 
-## How to set up a GitHub Plugin Repository
+## 🌐 Add to Jellyfin via GitHub Repository (Recommended)
 
-You can serve this plugin globally to others by deploying a GitHub "Repository Manifest":
+Since this repository is already fully configured with GitHub Actions, you can instantly install and update the plugin directly from your Jellyfin Dashboard!
 
-1. **Push your code to GitHub**: Setup your `git` repo and push all these files.
-2. **Setup the built-in GitHub Actions workflow**: The repo contains a `.github/workflows/build.yml` file. When you push a Git tag formatted with a `v` (e.g. `git tag -a v1.0.0 -m "Release v1.0.0"` followed by `git push origin v1.0.0`), GitHub will automatically compile your project and attach `M4bEnhancer.zip` directly to your GitHub Releases.
-3. **Configure the `manifest.json` file**: Use the enclosed `manifest.json`. 
-4. Calculate the MD5 Hash of the published `M4bEnhancer.zip` and add it to `checksum` in the `manifest.json`.
-5. Point your Jellyfin Server to this plugin! Navigate to **Dashboard -> Plugins -> Repositories** and click Add. Give it a name and use the `Raw` URL to your GitHub `manifest.json` file:
-   `https://raw.githubusercontent.com/jensul/Jellyfin-m4b-Plugin/main/manifest.json`
-   Jellyfin will then beautifully present the plugin for automatic web installation dynamically.
+1. Open your Jellyfin server and navigate to **Dashboard -> Plugins -> Repositories**.
+2. Click the **+** (Add) button.
+3. Enter a name (e.g., `M4B Enhancer Catalog`).
+4. Copy and paste the following exact URL into the **Repository URL** field:
+   
+   ```text
+   https://raw.githubusercontent.com/jensul/Jellyfin-m4b-Plugin/main/manifest.json
+   ```
+
+5. Click Save. Now click over to your **Catalog** tab, and you will find the `M4B Audiobook Enhancer` ready for 1-click installation!
+
+---
+
+### How to release a new update
+If you make code changes in the future and want to push an update:
+1. Push your code.
+2. Push a new tag `git tag -a v1.0.3 -m "Update"` & `git push origin v1.0.3`.
+3. Wait for the GitHub Action to finish creating the zip. Download it and generate its MD5 hash.
+4. Open `manifest.json`, duplicate the version block at the top, change the version number, add the new checksum, and push! Jellyfin will automatically see the new version!
